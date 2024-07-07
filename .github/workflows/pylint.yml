@@ -5,9 +5,6 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.8", "3.9", "3.10"]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -22,15 +19,20 @@ jobs:
         id: cache-dependencies
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - if: ${{ steps.cache-dependencies.outputs.cache-hit != 'true' }}
+        name: List the state of the pip cache
+        continue-on-error: true
+        run: |
+          ls -l ~/.cache/pip
+
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
-          cache: 'pip'
+          python-version: "3.11"
+          cache: "pip"
 
       - name: Install dependencies
         if: steps.cache-dependencies.outputs.cache-hit != 'true'

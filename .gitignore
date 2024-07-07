@@ -1,8 +1,17 @@
 **/**_pycache__/
-logs/**/*
-todo.md
-models/**/*
 venv/**/*
 venv
+
+# Model files
+models/**/*
 models.json
+
+# Dev 
 *.prof
+logs/**/*
+
+# Notes
+todo.md
+note*.md
+temp*.md
+*temp.md

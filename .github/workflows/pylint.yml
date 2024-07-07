@@ -61,7 +61,8 @@ jobs:
           pylint --version
 
       - name: Run Pylint
-        if: steps.changed_files.outputs.any_changed == 'true'
+        # Comment out the next line to run Pylint on all files
+        # if: steps.changed_files.outputs.any_changed == 'true'
         run: |
           echo "Running Pylint on changed files..."
-          echo "${{ steps.changed_files.outputs.all_changed_files }}" | xargs -n 1 pylint || (echo "Pylint found errors!" && exit 1)
+          echo "${{ steps.changed_files.outputs.all_changed_files }}" | tr ' ' '\n' | grep -E '\.py$' | xargs pylint || (echo "Pylint found errors!" && exit 1)
